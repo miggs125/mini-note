@@ -12,3 +12,24 @@ doctype=<!DOCTYPE html>
     </div>
 </body>
 </html>
+
+<script src="https://unpkg.com/filer/filer.min.js"></script>
+<script>
+    const fs =  new Filer.FileSystem();
+    window.onload = () => {
+        window.addEventListener('DOMContentLoaded', (event) => {
+            fs.readFile('/note', 'utf8', (err, data) => {
+                let note = document.createElement('div');
+                let text = document.createElement('p');
+                
+                text.setAttribute('contenteditable', 'true');
+                
+                if (!err) text.innerText = data;
+                else text.innerText = 'Welcome to mini-note!';
+                let interval = setInterval(() => {
+                    fs.
+                },2500)
+            });
+        })
+    }
+</script>
