@@ -12,32 +12,41 @@
     </div>
     <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
     <script>
-        let interval;
-        window.addEventListener('DOMContentLoaded', () => {
-            const fs = new Filer.FileSystem();
-            let note = document.createElement('div');
-            let text = document.createElement('p');
-    
-            text.setAttribute('contenteditable', 'true');
-            text.setAttribute('id', 'note');
-    
-            fs.readFile('/note', 'utf8', (err, data) => {
-                if (!err) text.innerText = data;
-                else text.innerText = 'Welcome to mini-note!';
-            });
-            note.appendChild(text);
-            document.body.appendChild(note);
-            interval = setInterval(() => {
-                fs.writeFile('/note', text.innerText, (err) => {
-                if (err) throw err;
-                });
-            }, 2500);
+      let interval;
+      window.addEventListener('DOMContentLoaded', () => {
+        const fs = new Filer.FileSystem();
+        let note = document.createElement('div');
+        let text = document.createElement('p');
+        let saveButton = document.createElement('button');
+
+        function save() {
+          fs.writeFile('/note', text.innerText, (err) => {
+            if (err) throw err;
+          });
+        }
+
+        saveButton.setAttribute('type', 'button');
+        saveButton.innerText = 'Save';
+        saveButton.onclick = save
+
+        text.setAttribute('contenteditable', 'true');
+        note.setAttribute('id', 'note');
+
+        fs.readFile('/note', 'utf8', (err, data) => {
+          if (!err && data !== '') text.innerText = data;
+          else text.innerText = 'Welcome to mini-note!';
         });
 
-        window.addEventListener('unload', (event, interval) => {
-            if(interval) clearInterval(interval);
-        });
+        note.appendChild(text);
+        note.appendChild(saveButton);
+
+        document.body.appendChild(note);
+        interval = setInterval(save, 3000);
+      });
+
+      window.addEventListener('unload', (event, interval) => {
+        if (interval) clearInterval(interval);
+      });
     </script>
   </body>
- 
 </html>
