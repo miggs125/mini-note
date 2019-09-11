@@ -1,35 +1,43 @@
-doctype=<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge" /> -->
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <div>
-        <p>Hello World!</p>
+      <p>Hello World!</p>
     </div>
-</body>
-</html>
-
-<script src="https://unpkg.com/filer/filer.min.js"></script>
-<script>
-    const fs =  new Filer.FileSystem();
-    window.onload = () => {
-        window.addEventListener('DOMContentLoaded', (event) => {
+    <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
+    <script>
+        let interval;
+        window.addEventListener('DOMContentLoaded', () => {
+            const fs = new Filer.FileSystem();
+            let note = document.createElement('div');
+            let text = document.createElement('p');
+    
+            text.setAttribute('contenteditable', 'true');
+            text.setAttribute('id', 'note');
+    
             fs.readFile('/note', 'utf8', (err, data) => {
-                let note = document.createElement('div');
-                let text = document.createElement('p');
-                
-                text.setAttribute('contenteditable', 'true');
-                
                 if (!err) text.innerText = data;
                 else text.innerText = 'Welcome to mini-note!';
-                let interval = setInterval(() => {
-                    fs.
-                },2500)
             });
-        })
-    }
-</script>
+            note.appendChild(text);
+            document.body.appendChild(note);
+            interval = setInterval(() => {
+                fs.writeFile('/note', text.innerText, (err) => {
+                if (err) throw err;
+                });
+            }, 2500);
+        });
+
+        window.addEventListener('unload', (event, interval) => {
+            if(interval) clearInterval(interval);
+        });
+    </script>
+  </body>
+ 
+</html>
