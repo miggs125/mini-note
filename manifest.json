@@ -1,0 +1,19 @@
+{
+
+    "manifest_version": 2,
+    "name": "mini-note",
+    "version": "0.1",
+  
+    "description": "Adds persistent notes to the browser",
+  
+    "icons": {
+    },
+  
+    "content_scripts": [
+      {
+        "matches": ["*://*.mozilla.org/*"],
+        "js": ["mini-note.js"]
+      }
+    ]
+  
+  }
