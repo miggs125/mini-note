@@ -1,61 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge" /> -->
-  <title>mini-note</title>
-</head>
-
-<body>
-  <div>
-    <p>Hello World!</p>
-  </div>
-  <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
-  <script>
-    class Note {
-      constructor() {
+class Note{
+    static noteCount = 0
+    constructor(){
         this.position = {
-          initial: { x: 0, y: 0 },
-          final: { x: 10, y: 10 }
+            initial: {
+                x: 10,
+                y: 10
+            },
+            final: {
+                x,y
+            }
         }
         this.height = 150;
         this.width = 150;
+        this.id = new Date().toDateString() + Note.noteCount;
         this.element = Note.createNoteElement();
-      }
+        element.setAttribute('id', this.id);
+        this.element.onmousedown = drawgMousedown
 
-      static createNoteElement() {
+        Note.noteCount++;
+    }
+
+    static createNoteElement(){
         let note = document.createElement('div');
         let text = document.createElement('p');
+        text.setAttribute('id', 'noteText'); // not sure if this is needed
 
+        
         note.appendChild(text);
         text.innerText = 'Click me to start editing'
         text.setAttribute('contenteditable', 'true');
-
+        
         return note;
-      }
+    }
 
-      editText(newText) {
+    editText(newText){
         this.element.firstChild.innerText = newText;
-      }
+    }
 
-      drag(e) {
+    drag(e){
         e = e || window.event;
         e.preventDefault();
-        diff = { x, y };
+        diff = {x,y};
         this.position.final.x = this.position.initial.x - e.clientX;
         this.position.final.y = this.position.initial.y - e.clientY;
         this.setPosition();
-      }
+    }
 
-      setPosition() {
+    setPosition(){
         this.element.style.top = (this.element.offsetTop - this.position.final.y)
         this.element.style.left = (this.element.offsetTop - this.position.final.x)
-      }
+    }
 
-      dragMouseDown(e) {
-        console.log('clicked me');
+    dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
 
@@ -64,55 +60,48 @@
         this.position.initial.y = e.clientY;
         document.onmousemove = drag;
         document.onmouseup = endDrag;
-      }
-
-      endDrag() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-      }
     }
 
+    endDrag(){
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
 
+window.onload = () => {
     let interval;
     window.addEventListener('DOMContentLoaded', () => {
-
-      let bob = new Note();
-      bob.element.onmousedown = bob.element.dragMouseDown;
-      document.body.appendChild(bob.element);
       const fs = new Filer.FileSystem();
       let note = document.createElement('div');
       let text = document.createElement('p');
       let saveButton = document.createElement('button');
-
+    
       function save() {
         fs.writeFile('/note', text.innerText, (err) => {
           if (err) throw err;
         });
       }
-
+    
       saveButton.setAttribute('type', 'button');
       saveButton.innerText = 'Save';
       saveButton.onclick = save
-
-      // text.setAttribute('contenteditable', 'true');
+    
+      text.setAttribute('contenteditable', 'true');
       note.setAttribute('id', 'note');
-
+    
       fs.readFile('/note', 'utf8', (err, data) => {
         if (!err && data !== '') text.innerText = data;
         else text.innerText = 'Welcome to mini-note!';
       });
-
+    
       note.appendChild(text);
       note.appendChild(saveButton);
-
+    
       document.body.appendChild(note);
       interval = setInterval(save, 3000);
     });
-
-    window.addEventListener('unload', (event, interval) => {
+    
+    window.addEventListener('unload', () => {
       if (interval) clearInterval(interval);
     });
-  </script>
-</body>
-
-</html>
+}
