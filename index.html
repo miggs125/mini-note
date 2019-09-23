@@ -1,60 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge" /> -->
-    <title>mini-note</title>
-    <style>
-      #identify {
-            background: #eee;
-            border-radius: 5px;
-            margin: 16px 0;
-        }
-    </style>
-  </head>
-  <body>
-    <div>
-      <p>Hello World!</p>
-    </div>
-    <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
-    <script>
-      let interval;
-      window.addEventListener('DOMContentLoaded', () => {
-        const fs = new Filer.FileSystem();
-        let note = document.createElement('div');
-        let text = document.createElement('p');
-        let saveButton = document.createElement('button');
 
-        function save() {
-          fs.writeFile('/note', text.innerText, (err) => {
-            if (err) throw err;
-          });
-        }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge" /> -->
+  <title>mini-note</title>
+  <style>
+    #identify {
+      background: #eee;
+      border-radius: 5px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
 
-        saveButton.setAttribute('type', 'button');
-        saveButton.innerText = 'Save';
-        saveButton.onclick = save
+<body>
+  <div>
+    <p>Hello World!</p>
+  </div>
+  <!-- <div class="countWords"></div> -->
 
-        text.id="identify";
-        text.setAttribute('contenteditable', 'true');
-        note.setAttribute('id', 'note');
+  <script src="https://unpkg.com/filer/dist/filer.min.js"></script>
+  <script>
+    let interval;
+    window.addEventListener('DOMContentLoaded', () => {
+      const fs = new Filer.FileSystem();
+      let note = document.createElement('div');
+      let text = document.createElement('p');
+      let count = document.createElement('div');
+      let saveButton = document.createElement('button');
 
-        fs.readFile('/note', 'utf8', (err, data) => {
-          if (!err && data !== '') text.innerText = data;
-          else text.innerText = 'Welcome to mini-note!';
+      function save() {
+        fs.writeFile('/note', text.innerText, (err) => {
+          if (err) throw err;
         });
+      }
 
-        note.appendChild(text);
-        note.appendChild(saveButton);
+      saveButton.setAttribute('type', 'button');
+      saveButton.innerText = 'Save';
+      saveButton.onclick = save
 
-        document.body.appendChild(note);
-        interval = setInterval(save, 3000);
+      text.id = "identify";
+      text.setAttribute('contenteditable', 'true');
+      count.setAttribute('id', 'countWords');
+      note.setAttribute('id', 'note');
+
+
+      fs.readFile('/note', 'utf8', (err, data) => {
+        if (!err && data !== '') text.innerText = data;
+        else text.innerText = 'Welcome to mini-note!';
       });
 
-      window.addEventListener('unload', (event, interval) => {
-        if (interval) clearInterval(interval);
-      });
-    </script>
-  </body>
+      note.appendChild(text);
+      note.appendChild(count);
+      note.appendChild(saveButton);
+
+      document.body.appendChild(note);
+      interval = setInterval(save, 3000);
+
+    /*************************************
+    *                                     *       
+    *         Word count Feature          *
+    *                                     *
+    ***************************************/
+    
+    // Word coutnt function by Roko C. Buljan,Frontend developer
+    // @ https://stackoverflow.com/questions/48389736/contenteditable-word-count-including-default-text?answertab=votes#tab-top
+
+    var words = document.querySelector('#countWords');
+    function wordsCount() {
+      var arr = identify.textContent.trim().replace(/\s+/g, ' ').split(' ');
+      words.textContent = !arr[0] ? 0 : arr.length;
+    }
+
+    identify.addEventListener('input', wordsCount);
+    wordsCount();
+
+
+    });
+    
+    window.addEventListener('unload', (event, interval) => {
+      if (interval) clearInterval(interval);
+    });
+  </script>
+</body>
+
 </html>
