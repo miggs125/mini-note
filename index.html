@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge" /> -->
     <title>mini-note</title>
+    <style>
+      #identify {
+            background: #eee;
+            border-radius: 5px;
+            margin: 16px 0;
+        }
+    </style>
   </head>
   <body>
     <div>
@@ -29,6 +36,7 @@
         saveButton.innerText = 'Save';
         saveButton.onclick = save
 
+        text.id="identify";
         text.setAttribute('contenteditable', 'true');
         note.setAttribute('id', 'note');
 
