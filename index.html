@@ -24,7 +24,9 @@
         const fs = new Filer.FileSystem();
         let note = document.createElement('div');
         let text = document.createElement('p');
+        text.setAttribute('id', 'text');
         let saveButton = document.createElement('button');
+        let clearButton = document.createElement('button');
 
         function save() {
           fs.writeFile('/note', text.innerText, (err) => {
@@ -32,9 +34,17 @@
           });
         }
 
+        function clear(){
+          text.innerHTML=""; 
+        }
+
         saveButton.setAttribute('type', 'button');
         saveButton.innerText = 'Save';
         saveButton.onclick = save
+
+        clearButton.setAttribute('type', 'button');
+        clearButton.innerText = 'Clear'; 
+        clearButton.onclick = clear; 
 
         text.id="identify";
         text.setAttribute('contenteditable', 'true');
@@ -47,6 +57,7 @@
 
         note.appendChild(text);
         note.appendChild(saveButton);
+        note.appendChild(clearButton);
 
         document.body.appendChild(note);
         interval = setInterval(save, 3000);
